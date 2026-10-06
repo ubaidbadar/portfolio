@@ -140,6 +140,7 @@ if (wide) {
       const d = Math.abs(t - (k + 1));
       s.style.opacity = k + 1 === LAST && t >= LAST ? 1 : clamp(1.45 - d * 2.4);
     });
+    story.classList.toggle('past-hero', t > 1.3); // hero-only loops are invisible from here on
     const now = Math.round(t);
     el.rail.forEach((r, k) => r.classList.toggle('on', k + 1 === now));
   }
@@ -168,6 +169,7 @@ if (wide) {
   // Only do per-frame work while the story is on screen.
   const io = new IntersectionObserver(([e]) => {
     active = e.isIntersecting;
+    story.classList.toggle('is-offscreen', !active);
     if (active) onScroll();
   });
 
@@ -175,6 +177,8 @@ if (wide) {
     const nodes = [el.fit, el.tilt, el.hero, el.h1a, el.h1b, el.hub, el.links, ...el.slabs, ...el.faces.flat(), ...el.bgs, ...el.lede, ...el.steps, ...el.chips, ...el.orbs, el.floor, el.ticker];
     nodes.forEach((n) => n.removeAttribute('style'));
     el.hero.classList.remove('is-gone');
+    story.classList.remove('past-hero', 'is-offscreen');
+    root.classList.remove('ready');
   }
 
   function setMode() {
@@ -188,6 +192,7 @@ if (wide) {
       story.addEventListener('pointermove', onPointer, { passive: true });
       io.observe(story);
       render();
+      root.classList.add('ready');
     } else {
       removeEventListener('scroll', onScroll);
       story.removeEventListener('pointermove', onPointer);
