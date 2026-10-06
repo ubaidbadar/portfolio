@@ -1,6 +1,8 @@
 <!doctype html>
 <!-- Source for assets/og.png. Reuses the site's own card styles; render at 1200x630 with a headless browser. -->
 <meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>OG image source</title>
 <link rel="stylesheet" href="../styles.css">
 <style>
   body {
@@ -20,7 +22,7 @@
   .copy > img { width: 96px; height: auto; align-self: flex-start; }
   .copy .eyebrow { margin-top: auto; font-size: 15px; letter-spacing: .12em; white-space: nowrap; }
   .copy h1 { margin-top: 12px; font-size: 124px; line-height: .88; letter-spacing: -.055em; font-weight: 800; }
-  .copy h1 span { display: block; width: fit-content; padding-bottom: .08em; background: linear-gradient(100deg, #7dffe9, #8f83ff 50%, #c04dff); -webkit-background-clip: text; color: transparent; }
+  .copy h1 span { display: block; width: fit-content; padding-bottom: .08em; background: var(--grad); -webkit-background-clip: text; color: transparent; }
   .copy .sub { margin-top: 18px; font-size: 23px; line-height: 1.35; color: var(--muted); }
   .anchor { position: absolute; left: 850px; top: 318px; width: 0; height: 0; }
   .anchor .scene-fit { transform: scale(.98); }

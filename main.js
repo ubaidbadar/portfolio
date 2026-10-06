@@ -52,6 +52,10 @@
   };
   el.faces = el.slabs.map((s) => [...s.querySelectorAll('.face')]);
 
+  // The ticker needs three copies of its list to loop seamlessly; the HTML carries one.
+  const tickerList = el.ticker.firstElementChild;
+  if (el.ticker.children.length === 1) el.ticker.append(tickerList.cloneNode(true), tickerList.cloneNode(true));
+
   let W = 0, H = 0, top = 0, fitScale = 1, wide = true;
   let heroScale = 1, heroY = 0, stepY = 0; // narrow layout only
   let ticking = false, active = false, enabled = false;

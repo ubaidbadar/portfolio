@@ -8,8 +8,8 @@
   --pink: #c04dff;
   --cyan: #6fd6ff; /* blueprint chapter only */
   --cream: #f4f1ea; /* text on dark surfaces */
-  --accent-hover: #7466ff;
-  --grad: linear-gradient(100deg, var(--accent-2), #8f83ff 52%, var(--pink));
+  /* One brand gradient, taken from the logo: violet to magenta. */
+  --grad: linear-gradient(100deg, #4a3aff, #b23cff); /* exactly the logo's two colours */
 
   /* Page gutter; beyond 90rem the content column stops growing. */
   --gutter: max(clamp(1.25rem, 5vw, 5rem), calc((100vw - 90rem) / 2));
@@ -66,12 +66,12 @@ a { color: inherit; }
 }
 .btn {
   display: inline-block; padding: .85rem 1.4rem; border-radius: var(--r-pill);
-  background: var(--accent); color: #fff; font-weight: 600; text-decoration: none;
-  transition: transform .25s var(--ease), background .25s, box-shadow .25s;
+  background: var(--grad); color: #fff; font-weight: 600; text-decoration: none;
+  transition: transform .25s var(--ease), filter .25s, background-color .25s, box-shadow .25s;
 }
-.btn:hover { transform: translateY(-2px); background: var(--accent-hover); }
+.btn:hover { transform: translateY(-2px); filter: brightness(1.12); }
 .btn-ghost { background: transparent; color: inherit; box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); }
-.btn-ghost:hover { background: rgba(255,255,255,.1); }
+.btn-ghost:hover { background: rgba(255,255,255,.1); filter: none; }
 
 /* ---------- Nav ---------- */
 /* Transparent over the hero; condenses into a floating glass pill once you scroll. */
@@ -99,7 +99,7 @@ a { color: inherit; }
 }
 .nav.on-light nav a:not(.nav-cta) { color: rgba(6,8,15,.8); }
 .nav.on-light nav a:not(.nav-cta):hover { color: var(--ink); background: rgba(6,8,15,.08); }
-.nav.on-light nav a[aria-current] { color: var(--ink); }
+.nav.on-light nav a[aria-current]:not(.nav-cta) { color: var(--ink); }
 .nav.on-light nav a:not(.nav-cta)::after { background: var(--accent); }
 /* Page progress: a ring that fills around the UB mark as you scroll. */
 @property --p { syntax: "<number>"; inherits: false; initial-value: 0; }
@@ -142,8 +142,8 @@ a { color: inherit; }
 .nav nav a:hover { color: #fff; background: rgba(255,255,255,.12); }
 .nav nav a:hover::after, .nav nav a[aria-current]::after { transform: scale(1); }
 .nav nav a[aria-current] { color: #fff; }
-.nav nav .nav-cta { margin-left: .5rem; background: var(--accent); color: #fff; font-weight: 600; }
-.nav nav .nav-cta:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(91,75,255,.55); }
+.nav nav .nav-cta { margin-left: .5rem; background: var(--grad); color: #fff; font-weight: 600; }
+.nav nav .nav-cta:hover { background: var(--grad); filter: brightness(1.12); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(140,70,255,.5); }
 .nav-sentinel { position: absolute; top: 0; left: 0; width: 1px; height: 45vh; pointer-events: none; }
 
 /* ---------- Story: static baseline (no JS / reduced motion) ---------- */
@@ -242,7 +242,7 @@ a { color: inherit; }
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.14), 0 30px 60px rgba(0,0,0,.5);
 }
 .f-top {
-  background: linear-gradient(135deg, var(--accent-2), #6c5cff 52%, var(--pink));
+  background: linear-gradient(135deg, #b9b0ff, #6c5cff 52%, var(--pink));
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.35), 0 0 110px rgba(91,75,255,.75);
   padding: 20px; justify-content: space-between; color: var(--ink);
 }
@@ -323,7 +323,7 @@ a { color: inherit; }
 
 
 /* ---------- Hero: layered object, orbiting stack, intro ---------- */
-.hero .h1-b { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .08em; }
+.hero .h1-b { width: fit-content; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .08em; }
 .slab[data-i="0"] .f-solid { background: linear-gradient(135deg, #0f5c66, #06262e); box-shadow: inset 0 0 0 1.5px rgba(125,255,233,.7), 0 40px 90px rgba(0,0,0,.6), 0 0 50px rgba(125,255,233,.25); }
 .slab[data-i="1"] .f-solid { background: linear-gradient(135deg, #24348f, #0b1238); box-shadow: inset 0 0 0 1.5px rgba(110,150,255,.75), 0 0 50px rgba(80,120,255,.3); }
 .slab[data-i="2"] .f-solid { background: linear-gradient(135deg, #5a2bb5, #1c0b45); box-shadow: inset 0 0 0 1.5px rgba(190,140,255,.8), 0 0 50px rgba(160,90,255,.35); }
@@ -455,7 +455,12 @@ a { color: inherit; }
 }
 .feature .desc { max-width: 34rem; opacity: .75; }
 .feature .tags { margin-bottom: 2rem; }
-.feature .btn { margin-top: auto; align-self: flex-start; }
+.feature .actions { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-top: auto; }
+/* Store links: platform mark plus the usual two-line label */
+.btn-store { display: inline-flex; align-items: center; gap: .65rem; padding: .72rem 1.25rem .72rem 1rem; text-align: left; }
+.btn-store svg { flex: none; width: 1.6rem; height: 1.6rem; }
+.btn-store span { display: block; font-size: 1.05rem; line-height: 1.15; letter-spacing: -.01em; }
+.btn-store small { display: block; font: 500 .62rem var(--sans); letter-spacing: .06em; text-transform: uppercase; opacity: .7; }
 
 /* More examples: screenshot cards */
 .examples { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3rem 1.5rem; }
@@ -488,7 +493,7 @@ a { color: inherit; }
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
 }
 .line { height: 2px; background: rgba(255,255,255,.14); }
-.line span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transform-origin: left; }
+.line span { display: block; height: 100%; background: linear-gradient(90deg, #4a3aff, #b23cff); transform-origin: left; }
 .platforms { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0 clamp(3rem, 8vw, 6rem); font-size: clamp(1.05rem, 2vw, 1.6rem); font-weight: 650; letter-spacing: -.02em; }
 .platforms span { display: block; font: var(--micro) var(--mono); color: var(--accent-2); margin-bottom: .4rem; }
 .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; }

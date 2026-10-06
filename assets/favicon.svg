@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="9 3 54 48" role="img" aria-label="Ubaid Badar">
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="8.5 3.5 49 49" role="img" aria-label="Ubaid Badar">
   <defs>
     <linearGradient id="face" x1="12" y1="14" x2="54" y2="48" gradientUnits="userSpaceOnUse">
       <stop class="a" offset="0" stop-color="#4a3aff"/>
@@ -8,7 +8,6 @@
     <path id="ub" d="M15 15v20a10 10 0 0 0 20 0V15v30M35 15h6.5a7.5 7.5 0 0 1 0 15H35h8.5a7.5 7.5 0 0 1 0 15H35"/>
   </defs>
   <g fill="none" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
-    <use class="e2" href="#ub" stroke="#c895f7" transform="translate(6 -6)"/>
     <use class="e1" href="#ub" stroke="#8a7df5" transform="translate(3 -3)"/>
     <use class="k" href="#ub" stroke="#f4f1ff" stroke-width="8.6"/>
     <use href="#ub" stroke="url(#face)"/>
