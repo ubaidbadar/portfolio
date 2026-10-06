@@ -45,13 +45,15 @@
     hero: story.querySelector('.hero'),
     h1a: story.querySelector('.h1-a'),
     h1b: story.querySelector('.h1-b'),
-    lede: [...story.querySelectorAll('.eyebrow, .hero-lede, .hero-cta, .scroll-hint')],
+    eyebrow: story.querySelector('.eyebrow'),
+    lede: [...story.querySelectorAll('.eyebrow, .hero-lede, .hero-cta')],
     steps: [...story.querySelectorAll('.step-in')],
     rail: [...story.querySelectorAll('.rail li')],
   };
   el.faces = el.slabs.map((s) => [...s.querySelectorAll('.face')]);
 
   let W = 0, H = 0, top = 0, fitScale = 1, wide = true;
+  let heroScale = 1, heroY = 0, stepY = 0; // narrow layout only
   let ticking = false, active = false, enabled = false;
 
   function measure() {
@@ -59,13 +61,26 @@
     H = stage.clientHeight;
     top = story.getBoundingClientRect().top + scrollY;
     wide = W >= 860;
-    fitScale = wide ? Math.min((W * 0.5) / 1000, (H * 0.8) / 720) : Math.min((W * 0.96) / 1000, (H * 0.44) / 720);
+if (wide) {
+      fitScale = Math.min((W * 0.5) / 1000, (H * 0.8) / 720);
+      return;
+    }
+    // Narrow layout: the visual lives in whatever space the copy leaves under the header,
+    // so it never collides with text on short screens.
+    const navH = 76;
+    const copyH = Math.max(...el.steps.map((s) => s.offsetHeight));
+    const free = Math.max(140, H - copyH - H * 0.07 - navH);
+    fitScale = Math.min((W * 0.96) / 1000, free / 600);
+    stepY = navH + free / 2 - H / 2;
+    const heroFree = Math.max(60, el.eyebrow.offsetTop - navH);
+    heroScale = clamp(heroFree / (430 * fitScale), 0.4, 1);
+    heroY = navH + heroFree / 2 - H / 2;
   }
 
   // Where the scene sits in the stage: beside the copy on desktop, above it on mobile.
   function offset(stageIndex) {
     if (wide) return stageIndex === 0 ? [W * 0.22, 0] : [W * 0.23, H * 0.02];
-    return stageIndex === 0 ? [0, -H * 0.36] : [0, -H * 0.23];
+    return stageIndex === 0 ? [0, heroY] : [0, stepY];
   }
 
   function render() {
@@ -79,7 +94,7 @@
     const A = POSES[i], B = POSES[i + 1];
 
     const [ax, ay] = offset(i), [bx, by] = offset(i + 1);
-    const sc = (wide ? lerp(A.sc, B.sc, u) : lerp(Math.min(A.sc, 1), B.sc, u)) * fitScale;
+    const sc = lerp(!wide && i === 0 ? heroScale : A.sc, B.sc, u) * fitScale;
     el.fit.style.transform = `translate3d(${lerp(ax, bx, u)}px,${lerp(ay, by, u)}px,0) scale(${sc})`;
     el.tilt.style.transform = `rotateY(${ptr.x * 7}deg) rotateX(${lerp(A.rx, B.rx, u) - ptr.y * 5}deg) rotateZ(${lerp(A.rz, B.rz, u)}deg)`;
     el.floor.style.opacity = lerp(A.floor || 0, B.floor || 0, u);
@@ -187,6 +202,7 @@
     cancelAnimationFrame(resizeRaf);
     resizeRaf = requestAnimationFrame(() => { if (enabled) { measure(); render(); } });
   });
+  addEventListener('load', () => { if (enabled) { measure(); render(); } });
   reduced.addEventListener('change', setMode);
   setMode();
 
