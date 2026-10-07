@@ -109,8 +109,9 @@ a { color: inherit; }
 }
 .nav.is-stuck .nav-mark::before {
   content: ""; position: absolute; inset: 0; border-radius: 50%;
-  /* One colour for the filled arc on every section; only the faint track adapts to the surface. */
-  background: conic-gradient(#a79dff, var(--pink) calc(var(--p) * 1%), var(--ring-track, rgba(255,255,255,.28)) 0);
+  /* The filled arc runs violet -> magenta -> violet, so its two ends are the same colour and it closes
+     without a seam when the page reaches the bottom. Only the faint track adapts to the surface. */
+  background: conic-gradient(#8a7bff, var(--pink) calc(var(--p) * .5%), #8a7bff calc(var(--p) * 1%), var(--ring-track, rgba(255,255,255,.28)) 0);
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3.5px));
   mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3.5px));
 }
