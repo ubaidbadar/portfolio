@@ -17,7 +17,8 @@
 
   /* Page gutter; beyond 90rem the content column stops growing. */
   --gutter: max(clamp(1.25rem, 5vw, 5rem), calc((100vw - 90rem) / 2));
-  --section: clamp(6rem, 11vw, 10rem); /* block padding of every full section */
+  --section: clamp(4.5rem, 8vw, 7rem); /* padding above and below every section; the same value separates the footer links */
+  --fade: clamp(8rem, 22vh, 16rem);    /* distance over which a section backdrop fades in and out */
 
   /* Radius scale. The 3D scene keeps its own px radii: it is a fixed design box scaled as a whole. */
   --r-sm: 8px;
@@ -74,6 +75,7 @@ a { color: inherit; }
   transition: transform .25s var(--ease), filter .25s, background-color .25s, box-shadow .25s;
 }
 .btn:hover { transform: translateY(-2px); filter: brightness(1.12); }
+.btn:active { transform: translateY(0) scale(.98); transition-duration: .08s; }
 .btn-ghost { background: transparent; color: inherit; box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); }
 .btn-ghost:hover { background: rgba(255,255,255,.1); filter: none; }
 
@@ -87,10 +89,12 @@ a { color: inherit; }
     padding .5s var(--ease), background .4s, box-shadow .4s, color .4s;
 }
 .nav.is-stuck {
-  top: .75rem; left: max(.75rem, calc(50% - 25rem)); right: max(.75rem, calc(50% - 25rem));
+  top: .75rem; left: max(.75rem, calc(50% - 27rem)); right: max(.75rem, calc(50% - 27rem));
   padding: .45rem .67rem 0.45rem 0.5rem;
-  background: rgba(255,255,255,.1); -webkit-backdrop-filter: blur(.5rem); backdrop-filter: blur(.5rem);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.2), 0 14px 40px rgba(0,0,0,.25);
+  /* Dark glass: whatever scrolls underneath (a white screenshot included) is dimmed and blurred
+     enough that the links keep their contrast. */
+  background: rgba(10,11,22,.8); -webkit-backdrop-filter: blur(1.25rem) saturate(1.5); backdrop-filter: blur(1.25rem) saturate(1.5);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.14), 0 14px 40px rgba(0,0,0,.35);
 }
 /* Page progress: a ring that fills around the UB mark as you scroll. */
 @property --p { syntax: "<number>"; inherits: false; initial-value: 0; }
@@ -138,10 +142,11 @@ a { color: inherit; }
 /* ---------- Story: static baseline (no JS / reduced motion) ---------- */
 .story {
   --fg: var(--cream); --muted: rgba(244,241,234,.68);
-  position: relative; background: var(--ink);
+  position: relative;
 }
 .stage { position: relative; min-height: 100svh; overflow: hidden; display: flex; }
 .bgs, .bg { position: absolute; inset: 0; }
+.bgs { -webkit-mask-image: linear-gradient(#000 calc(100% - var(--fade)), transparent); mask-image: linear-gradient(#000 calc(100% - var(--fade)), transparent); }
 .bg { opacity: 0; }
 /* Story backdrops use the same recipe as the rest of the site: colour glows on the near-black canvas.
    Each chapter keeps its own tint, so the backdrop still shifts as the story moves on. */
@@ -407,7 +412,7 @@ a { color: inherit; }
   .motion .step h2 { font-size: clamp(1.8rem, 8vw, 2.6rem); }
   .motion .step p { font-size: .98rem; }
   .motion .rail { right: .1rem; top: 30%; }
-  .nav nav a:nth-child(3), .nav nav a:nth-child(4) { display: none; }
+  .nav nav a:nth-child(3), .nav nav a:nth-child(4), .nav nav a:nth-child(5) { display: none; }
   .facts { gap: 1.4rem; margin-top: 1.1rem; }
   .facts b { font-size: 1.7rem; }
 }
@@ -424,21 +429,28 @@ a { color: inherit; }
 /* ---------- Sections after the story ----------
    One dark canvas. Sections are told apart by colour glows behind them, and all content
    sits in near-black rounded cards arranged in grids. */
-.work, .engage, .skills, .contact { position: relative; isolation: isolate; overflow: hidden; padding: var(--section) var(--gutter); }
-.work::before, .skills::before, .contact::before { content: ""; position: absolute; inset: 0; z-index: -1; }
-.work::before {
-  background:
-    radial-gradient(60% 24% at 88% 2%, rgba(74,58,255,.45), transparent 70%),
-    radial-gradient(55% 26% at 0% 42%, rgba(178,60,255,.24), transparent 70%),
-    radial-gradient(60% 26% at 100% 96%, rgba(74,58,255,.32), transparent 70%);
-}
-.skills::before {
-  background:
-    radial-gradient(55% 60% at 10% 15%, rgba(178,60,255,.26), transparent 70%),
-    radial-gradient(55% 60% at 100% 95%, rgba(74,58,255,.36), transparent 70%);
+.work, .engage, .reviews, .skills, .contact {
+  position: relative; isolation: isolate; overflow: hidden; padding: var(--section) var(--gutter);
+  scroll-margin-top: 2.5rem; /* anchor jumps leave the section label clear of the floating header */
 }
 
-.sec-head { max-width: 58rem; margin: 0 auto clamp(2.5rem, 6vw, 4.5rem); text-align: center; }
+
+/* Page backdrop. The glows are laid down the full length of the page and scroll with it, alternating
+   sides and hues (violet, magenta, blue). They are NOT tied to sections: a glow can sit across a
+   section boundary, so there is never an edge where one section's colour stops and the next begins,
+   and each stretch of the page still has its own colour. Each glow dies out inside its tile, so the
+   tile repeats without a seam. */
+body { position: relative; }
+body::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(62% 17% at 92% 16%, rgba(74,58,255,.55), transparent 72%),
+    radial-gradient(56% 15% at 4% 40%, rgba(178,60,255,.34), transparent 72%),
+    radial-gradient(60% 16% at 96% 64%, rgba(61,120,255,.36), transparent 72%),
+    radial-gradient(56% 15% at 0% 87%, rgba(108,72,255,.42), transparent 72%);
+  background-size: 100% 260vh; background-repeat: repeat-y;
+}
+.sec-head { max-width: 58rem; margin: 0 auto clamp(2.25rem, 4.5vw, 3.5rem); text-align: center; }
 .sec-head h2 { margin-top: .9rem; font-size: clamp(2.2rem, 5.4vw, 4.75rem); line-height: 1.02; letter-spacing: -.04em; text-wrap: balance; }
 .sec-lede { max-width: 42rem; margin: 1.5rem auto 0; font-size: 1.15rem; color: var(--dim); }
 /* Two-tone headlines: one phrase picked out in the brand gradient */
@@ -448,7 +460,7 @@ a { color: inherit; }
 }
 
 /* The card: shared by every block below */
-.feature, .example, .platforms li, .stats div, .skill-grid > div {
+.feature, .example, .platforms li, .skill-grid > div, .quote {
   background: var(--card); border-radius: var(--r-lg); box-shadow: inset 0 0 0 1px var(--line);
 }
 
@@ -459,21 +471,14 @@ a { color: inherit; }
 }
 
 /* Screenshot frame */
-.frame { display: block; overflow: hidden; border-radius: var(--r-md); background: #0b0d16; box-shadow: 0 0 0 1px var(--line); }
-.frame::before {
-  content: ""; display: block; height: 28px; background:
-    radial-gradient(circle at 18px 14px, rgba(255,255,255,.24) 4px, transparent 4.5px),
-    radial-gradient(circle at 33px 14px, rgba(255,255,255,.24) 4px, transparent 4.5px),
-    radial-gradient(circle at 48px 14px, rgba(255,255,255,.24) 4px, transparent 4.5px), #14161f;
-}
-.frame img { width: 100%; }
+.frame { display: block; overflow: hidden; background: #0b0d16; box-shadow: 0 0 0 1px var(--line); }
 
 /* Group label with a rule running to the edge */
 .group {
-  display: flex; align-items: center; gap: 1rem; margin: clamp(3.5rem, 8vw, 6rem) 0 1.75rem;
+  display: flex; align-items: center; gap: 1rem; margin: clamp(2.5rem, 5vw, 4rem) 0 1.25rem;
   font: var(--label) var(--mono); letter-spacing: var(--track); text-transform: uppercase; color: rgba(244,241,234,.6);
 }
-.group::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,.12); }
+.group::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 .sec-head + .group { margin-top: 0; }
 
 /* Main projects: two large cards */
@@ -485,10 +490,11 @@ a { color: inherit; }
 .feature::before { content: ""; position: absolute; inset: 0; z-index: -1; }
 .f-stock::before { background: radial-gradient(70% 80% at 100% 0%, rgba(61,139,255,.42), transparent 70%), radial-gradient(50% 60% at 0% 100%, rgba(74,58,255,.2), transparent 70%); }
 .f-predict::before { background: radial-gradient(70% 80% at 100% 0%, rgba(91,75,255,.55), transparent 70%), radial-gradient(50% 60% at 0% 100%, rgba(192,77,255,.2), transparent 70%); }
+.feature .proj-kind { width: auto; padding: 0; box-shadow: none; font-size: var(--label); letter-spacing: var(--track); line-height: 1.6; color: var(--accent-soft); }
 .feature h4 { margin: 1rem 0 1.25rem; font-size: clamp(2.2rem, 4.4vw, 4rem); line-height: 1; letter-spacing: -.04em; overflow-wrap: anywhere; }
 .feature blockquote {
   width: fit-content; margin: 0 0 1.1rem; font-size: clamp(1.15rem, 1.8vw, 1.5rem); font-weight: 650; line-height: 1.25; letter-spacing: -.02em;
-  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+  color: var(--cream); /* the gradient is kept for headlines and primary actions */
 }
 .feature .desc { max-width: 34rem; color: var(--dim); }
 .feature .tags { margin-bottom: 2rem; }
@@ -501,20 +507,30 @@ a { color: inherit; }
 
 /* More examples: a bento grid. Two wide cards, then rows of three. */
 .examples { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1rem; }
-.example { position: relative; display: flex; flex-direction: column; grid-column: span 2; padding: 1rem 1rem 1.6rem; }
+.example { position: relative; display: flex; flex-direction: column; grid-column: span 2; padding: 1.25rem 1.25rem 1.5rem; }
 .example:nth-child(-n+2) { grid-column: span 3; }
-.example > :not(.frame) { margin-inline: .75rem; }
-.example .frame { margin-bottom: 1.4rem; }
+.example > :not(.frame) { margin-inline: .25rem; } /* text sits on (almost) the same left edge as the picture */
+.example .frame { margin-bottom: 1.25rem; border-radius: 12px; } /* card radius minus card padding, so the corners nest */
+/* Bright pages are toned down a little so they sit in the dark card, and return to full
+   brightness on hover. */
+.example .frame img { width: 100%; aspect-ratio: 16 / 8.2; object-fit: cover; object-position: top; filter: brightness(.9) saturate(.95); transition: filter .35s, scale .6s var(--ease); }
+.example:hover .frame img { filter: none; }
 .example h4 { margin-block: .9rem .45rem; font-size: 1.5rem; line-height: 1.1; letter-spacing: -.03em; }
 .example:nth-child(-n+2) h4 { font-size: clamp(1.6rem, 2.6vw, 2.2rem); }
 .example h4 + p { padding-right: 3.5rem; font-size: .98rem; color: var(--dim); }
-/* Round action button in the card's corner */
+/* The title is the card's one link; it is stretched over the whole card so the picture, the text
+   and the arrow are all one target. */
+.example h4 a { text-decoration: none; outline: none; }
+.example h4 a::after { content: ""; position: absolute; inset: 0; border-radius: var(--r-lg); }
+.example:has(a:focus-visible) { outline: 2px solid var(--focus); outline-offset: 3px; }
+/* Arrow in the card's corner: quiet at rest, filled once the card is the target */
 .go {
-  position: absolute; right: 1.25rem; bottom: 1.25rem; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; margin: 0 !important;
-  border-radius: 50%; background: var(--grad); color: #fff; font-size: 1.15rem; line-height: 1; text-decoration: none;
-  transition: scale .25s var(--ease), filter .25s;
+  position: absolute; right: 1.5rem; bottom: 1.5rem; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; margin: 0 !important;
+  border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(255,255,255,.22); color: var(--cream); font-size: 1.15rem; line-height: 1;
+  transition: background-color .25s, box-shadow .25s, rotate .35s var(--ease);
 }
-.also { margin-top: clamp(2.5rem, 6vw, 4rem); text-align: center; font: var(--micro) var(--mono); letter-spacing: .04em; color: var(--dim); }
+.example:is(:hover, :focus-within) .go { background: var(--accent); box-shadow: none; color: #fff; rotate: 45deg; }
+.also { margin-top: 2rem; text-align: center; font: var(--micro) var(--mono); letter-spacing: .04em; color: var(--dim); }
 
 /* Experience */
 .engage-bg { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
@@ -523,41 +539,55 @@ a { color: inherit; }
   background:
     linear-gradient(rgba(140,150,255,.1) 1px, transparent 1px) 0 0 / 56px 56px,
     linear-gradient(90deg, rgba(140,150,255,.1) 1px, transparent 1px) 0 0 / 56px 56px;
-  -webkit-mask: radial-gradient(90% 80% at 75% 20%, #000, transparent 75%); mask: radial-gradient(90% 80% at 75% 20%, #000, transparent 75%);
+  -webkit-mask: radial-gradient(60% 45% at 70% 40%, #000, transparent 75%); mask: radial-gradient(60% 45% at 70% 40%, #000, transparent 75%);
 }
-.glow { position: absolute; border-radius: 50%; filter: blur(90px); will-change: transform; }
-.g1 { width: 46vw; height: 46vw; right: -10vw; top: -12vw; background: rgba(91,75,255,.5); }
-.g2 { width: 38vw; height: 38vw; left: -12vw; bottom: -14vw; background: rgba(178,60,255,.3); }
 .ghost {
   position: absolute; right: -4vw; top: 50%; translate: 0 -55%;
   font-size: 38vw; font-weight: 850; letter-spacing: -.06em; line-height: 1; white-space: nowrap;
   color: transparent; -webkit-text-stroke: 1.5px rgba(170,165,255,.16); will-change: transform;
 }
-.line { height: 2px; background: rgba(255,255,255,.14); }
-.line span { display: block; height: 100%; background: linear-gradient(90deg, #4a3aff, #b23cff); transform-origin: left; }
-.platforms { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0 1rem; font-size: clamp(1.05rem, 2vw, 1.6rem); font-weight: 650; letter-spacing: -.02em; }
-.platforms li { padding: 1.5rem 1.5rem 1.6rem; overflow-wrap: anywhere; }
-.platforms span { display: block; font: var(--micro) var(--mono); color: var(--accent-soft); margin-bottom: .5rem; }
-.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
-.stats div { display: flex; flex-direction: column-reverse; justify-content: flex-end; padding: 1.5rem 1.5rem 1.6rem; }
-.stats dd { font-size: clamp(2.6rem, 5.6vw, 5rem); font-weight: 800; letter-spacing: -.05em; line-height: 1; font-variant-numeric: tabular-nums; }
-.stats dt { margin-top: .7rem; font-size: .9rem; color: var(--dim); }
-.fine { margin-top: 2.5rem; text-align: center; font: var(--micro) var(--mono); letter-spacing: .04em; opacity: .6; }
+.platforms { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.platforms a { display: flex; flex-direction: column; height: 100%; padding: 1.5rem 1.5rem 1.6rem; border-radius: inherit; text-decoration: none; }
+.platforms span { font: var(--micro) var(--mono); color: var(--accent-soft); margin-bottom: clamp(2rem, 5vw, 4.5rem); }
+.platforms b { font-size: clamp(1.15rem, 1.9vw, 1.6rem); font-weight: 650; letter-spacing: -.02em; line-height: 1.15; overflow-wrap: break-word; }
+.platforms b::after { content: " ↗"; font-weight: 400; color: var(--dim); transition: color .25s; }
+.platforms i { margin-top: .5rem; font-style: normal; font-size: .95rem; line-height: 1.45; color: var(--dim); }
+
+/* Marketplace numbers: an open row above the reviews they summarise, not more cards */
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 56rem; margin: 0 auto; text-align: center; }
+.stats div { display: flex; flex-direction: column-reverse; justify-content: flex-end; padding: .25rem clamp(.5rem, 2vw, 1.5rem); }
+.stats div + div { border-left: 1px solid var(--line); }
+.stats dd { font-size: clamp(2.2rem, 6.4vw, 5rem); font-weight: 800; letter-spacing: -.05em; line-height: 1; font-variant-numeric: tabular-nums; }
+.stats dt { margin-top: .7rem; font-size: clamp(.8rem, 1.2vw, .95rem); line-height: 1.35; color: var(--dim); }
+.fine { margin-top: 2rem; text-align: center; font: var(--micro)/1.7 var(--mono); letter-spacing: .04em; color: var(--dim); }
+.stats + .fine { margin-bottom: clamp(2.25rem, 4.5vw, 3.5rem); }
+
+/* Reviews: one lead quote, then a masonry of quote cards */
+.quote { margin: 0; padding: 1.6rem 1.6rem 1.4rem; }
+.quote blockquote { margin: 0; }
+.quote blockquote p + p { margin-top: .8em; }
+.quote blockquote { font-size: 1.02rem; line-height: 1.55; color: rgba(244,241,234,.9); overflow-wrap: anywhere; }
+.stars { margin-bottom: .9rem; font-size: .85rem; letter-spacing: .18em; color: var(--accent-soft); }
+.quote figcaption { display: flex; align-items: center; gap: .75rem; margin-top: 1.25rem; padding-top: 1.1rem; border-top: 1px solid var(--line); }
+.av { flex: none; display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: rgba(179,168,255,.12); box-shadow: inset 0 0 0 1px rgba(179,168,255,.3); color: var(--accent-soft); font-weight: 650; }
+.quote figcaption span:last-child { display: flex; flex-direction: column; min-width: 0; }
+.quote figcaption b { font-weight: 650; overflow-wrap: anywhere; }
+.quote figcaption i { font: normal var(--micro) var(--mono); letter-spacing: .02em; color: var(--dim); }
+.quote-lead { margin-bottom: 1rem; padding: clamp(2rem, 5vw, 4rem); text-align: center; }
+.quote-lead blockquote { max-width: 46rem; margin-inline: auto; font-size: clamp(1.5rem, 3.2vw, 2.6rem); font-weight: 650; line-height: 1.15; letter-spacing: -.03em; color: var(--cream); text-wrap: balance; }
+.quote-lead figcaption { justify-content: center; border-top: 0; padding-top: 0; margin-top: 1.75rem; text-align: left; }
+.quotes { columns: 3; column-gap: 1rem; }
+.quotes .quote { break-inside: avoid; margin-bottom: 1rem; }
+.actions-center { margin-top: 1.5rem; text-align: center; }
 
 /* Skills */
-.skill-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.skill-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
 .skill-grid > div { padding: 1.75rem 1.75rem 1.4rem; }
 .skill-grid h3 { color: var(--accent-soft); margin-bottom: 1rem; }
 .skill-grid li { padding: .6rem 0; border-top: 1px solid var(--line); font-size: 1.08rem; }
 
 /* Contact */
-.contact { padding-bottom: 2rem; }
-.contact::before {
-  background:
-    radial-gradient(45% 60% at 85% 0%, rgba(91,75,255,.45), transparent 70%),
-    radial-gradient(35% 50% at 100% 60%, rgba(192,77,255,.22), transparent 70%),
-    radial-gradient(40% 50% at 0% 100%, rgba(74,58,255,.2), transparent 70%);
-}
+.contact { padding-bottom: clamp(2rem, 4vw, 3rem); }
 .contact h2 { margin: .9rem 0 2.5rem; font-size: clamp(2.8rem, 9vw, 8.5rem); line-height: .9; letter-spacing: -.05em; transform-origin: left; }
 .grad { display: block; width: fit-content; padding-bottom: .08em; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .mail {
@@ -574,65 +604,55 @@ a { color: inherit; }
 .reach > * { padding: 1.05rem 1.5rem; font-size: clamp(1rem, 1.6vw, 1.2rem); line-height: 1.3; }
 .foot-grid {
   display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 2.5rem;
-  margin-top: clamp(4rem, 9vw, 7rem); padding-top: 2.5rem; border-top: 1px solid rgba(255,255,255,.14);
+  margin-top: var(--section);
 }
 .foot-grid h3 { opacity: .55; margin-bottom: 1rem; }
 .foot-grid p { max-width: 24rem; opacity: .75; }
 .foot-grid li { margin-bottom: .55rem; }
 .foot-grid a { text-decoration: none; opacity: .85; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .3s, opacity .3s; }
 .foot-grid a:hover { opacity: 1; background-size: 100% 1px; }
-.foot-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; margin-top: 3.5rem; font: var(--micro) var(--mono); letter-spacing: .04em; opacity: .55; }
+.foot-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; font: var(--micro) var(--mono); letter-spacing: .04em; opacity: .55; }
 .foot-bar a { text-decoration: none; }
 
 @media (max-width: 859px) {
   .features { grid-template-columns: 1fr; }
   .feature { min-height: 0; }
-  .platforms, .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .platforms { font-size: clamp(.92rem, 3.6vw, 1.3rem); }
-  .platforms li { padding-inline: 1rem; }
+  .platforms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .platforms a { padding: 1.25rem 1.1rem 1.3rem; }
+  /* Skills: one card per row, its items in two columns, so the section is not a long ladder */
+  .skill-grid { grid-template-columns: 1fr; }
+  .skill-grid ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1.5rem; }
   .foot-grid { grid-template-columns: 1fr 1fr; }
   .foot-grid > :first-child { grid-column: 1 / -1; }
 }
 @media (max-width: 1099px) {
   .examples { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .example, .example:nth-child(-n+2) { grid-column: auto; }
-  .skill-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .quotes { columns: 2; }
 }
 @media (max-width: 639px) {
   :root { --r-lg: 22px; }
-  .examples, .skill-grid { grid-template-columns: 1fr; }
-}
-@media (max-width: 359px) {
+  .examples { grid-template-columns: 1fr; }
+  /* Phones: platforms stack, so no name has to break mid-word */
   .platforms { grid-template-columns: 1fr; }
+  .platforms span { margin-bottom: 1rem; }
+  .quotes { columns: 1; }
+  .quotes .quote:nth-child(n+8) { display: none; } /* phones get the lead quote plus seven; the Fiverr link has the rest */
 }
 
 /* ---------- Hover states ---------- */
-/* Hovers use the individual translate/scale properties so they stack with scroll-driven transforms. */
-.frame { position: relative; transition: translate .4s var(--ease), box-shadow .4s; }
+/* Only things you can act on respond to the pointer. Hovers use the individual translate/scale
+   properties so they stack with scroll-driven transforms. */
 .frame img { transition: scale .6s var(--ease); }
-.frame::after {
-  content: "Visit live site ↗"; position: absolute; right: 1rem; bottom: 1rem; padding: .6rem 1rem; border-radius: var(--r-pill);
-  background: var(--ink); color: #fff; font: var(--micro) var(--mono); opacity: 0; translate: 0 .6rem; transition: opacity .3s, translate .3s;
-}
-.feature { transition: translate .35s var(--ease), box-shadow .35s; }
 .also a, .fine a { text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; transition: background-size .3s, color .3s; }
-.platforms li, .stats div, .skill-grid > div, .example { transition: translate .35s var(--ease), box-shadow .35s; }
-.skill-grid li { transition: padding-left .3s, color .3s; }
+.feature, .example, .platforms li { transition: translate .35s var(--ease), box-shadow .35s; }
 .tags li { transition: background .25s, color .25s, border-color .25s; }
 .rail a::before { transition: transform .3s, opacity .3s, background .3s; }
 @media (hover: hover) {
-  .frame:hover { translate: 0 -8px; box-shadow: 0 0 0 1px rgba(91,75,255,.4), 0 50px 90px -30px rgba(91,75,255,.55); }
-  .frame:hover img { scale: 1.04; }
-  .frame:hover::after { opacity: 1; translate: 0 0; }
-  .feature:hover { translate: 0 -6px; box-shadow: 0 30px 60px -25px rgba(91,75,255,.55); }
-  .also a:hover, .fine a:hover { background-size: 0 1px; background-position: 100% 100%; }
-  .also a:hover { color: var(--accent-soft); }
-  .fine a:hover { color: var(--accent-soft); }
-  .platforms li:hover, .stats div:hover, .skill-grid > div:hover, .example:hover { translate: 0 -5px; box-shadow: inset 0 0 0 1px rgba(179,168,255,.45), 0 24px 60px -24px rgba(91,75,255,.6); }
-  .example .frame:hover { translate: none; box-shadow: 0 0 0 1px var(--line); } /* the card lifts, not the picture inside it */
-  .go:hover { scale: 1.1; filter: brightness(1.12); }
-  .skill-grid li:hover { padding-left: .6rem; color: var(--accent-soft); }
-  .tags li:hover { background: color-mix(in srgb, currentColor 14%, transparent); border-color: currentColor; }
+  .example:hover .frame img { scale: 1.04; }
+  .also a:hover, .fine a:hover { background-size: 0 1px; background-position: 100% 100%; color: var(--accent-soft); }
+  .platforms li:hover, .example:hover { translate: 0 -3px; box-shadow: inset 0 0 0 1px rgba(179,168,255,.45), 0 24px 60px -24px rgba(91,75,255,.6); }
+  .platforms li:hover b::after { color: var(--accent-soft); }
   .rail a:hover::before { opacity: 1; transform: scale(1.6); background: var(--accent-soft); }
   .foot-bar a:hover { color: var(--accent-soft); }
 }
@@ -641,42 +661,27 @@ a { color: inherit; }
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
 
+  /* Reveals are over by the time a block has fully entered the viewport, so nothing is still
+     faded or shifted while it is being read. */
   @supports (animation-timeline: view()) {
-    .frame {
-      animation: frame-in linear both; animation-timeline: view(); animation-range: entry 0% cover 42%;
-    }
     .frame img {
       animation: img-drift linear both; animation-timeline: view(); animation-range: cover 0% cover 100%;
     }
-    .example .frame { animation: none; } /* the card animates as one piece */
-    .feature, .example, .stats div, .sec-head, .skill-grid > div {
-      animation: copy-in linear both; animation-timeline: view(); animation-range: entry 10% cover 30%;
+    .feature, .example, .sec-head, .stats, .skill-grid > div, .quote, .platforms li {
+      animation: copy-in linear both; animation-timeline: view(); animation-range: entry 0% entry 70%;
     }
+    /* Tall blocks finish after a fixed distance instead, so they are not half-faded for a full screen */
+    .feature, .example, .quote-lead { animation-range: entry 0% entry 16rem; }
+    .platforms li:nth-child(2) { animation-range: entry 10% entry 80%; }
+    .platforms li:nth-child(3) { animation-range: entry 20% entry 90%; }
+    .platforms li:nth-child(4) { animation-range: entry 30% entry 100%; }
     .ghost { animation: ghost-slide linear both; animation-timeline: view(); }
-    .g1 { animation: glow-a linear both; animation-timeline: view(); }
-    .g2 { animation: glow-b linear both; animation-timeline: view(); }
-    .line span {
-      animation: draw linear both; animation-timeline: view(); animation-range: entry 60% cover 55%;
-    }
-    .platforms li {
-      animation: copy-in linear both; animation-timeline: view(); animation-range: entry 30% cover 45%;
-    }
-    .platforms li:nth-child(2) { animation-range: entry 55% cover 50%; }
-    .platforms li:nth-child(3) { animation-range: entry 80% cover 55%; }
-    .platforms li:nth-child(4) { animation-range: entry 105% cover 60%; }
     .contact h2 {
       animation: big-in linear both; animation-timeline: view(); animation-range: entry 0% cover 35%;
     }
   }
 }
-@keyframes frame-in {
-  from { transform: perspective(1400px) rotateX(22deg) scale(.82) translateY(8%); opacity: .35; }
-  to   { transform: perspective(1400px) rotateX(0) scale(1) translateY(0); opacity: 1; }
-}
 @keyframes img-drift { from { transform: scale(1.12) translateY(-3%); } to { transform: scale(1) translateY(0); } }
-@keyframes copy-in { from { transform: translateY(3rem); opacity: 0; } to { transform: none; opacity: 1; } }
-@keyframes draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes copy-in { from { transform: translateY(2rem); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes big-in { from { transform: translateX(-8%) scale(.9); opacity: .2; } to { transform: none; opacity: 1; } }
 @keyframes ghost-slide { from { transform: translateX(22%); } to { transform: translateX(-22%); } }
-@keyframes glow-a { from { transform: translate(10%, -20%) scale(.8); } to { transform: translate(-25%, 45%) scale(1.15); } }
-@keyframes glow-b { from { transform: translate(-10%, 30%) scale(1.1); } to { transform: translate(30%, -40%) scale(.85); } }

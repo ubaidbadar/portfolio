@@ -221,7 +221,7 @@ if (wide) {
     .observe(document.querySelector('.nav-sentinel'));
 
   const navLinks = [...nav.querySelectorAll('nav a')];
-  const targets = { story: '#ch-1', work: '#work', engagement: '#engagement', skills: '#skills', contact: '#contact' };
+  const targets = { story: '#ch-1', work: '#work', engagement: '#engagement', reviews: '#reviews', skills: '#skills', contact: '#contact' };
   const spy = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
       if (!e.isIntersecting) return;
