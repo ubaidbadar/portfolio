@@ -220,20 +220,6 @@ if (wide) {
   new IntersectionObserver(([e]) => nav.classList.toggle('is-stuck', !e.isIntersecting))
     .observe(document.querySelector('.nav-sentinel'));
 
-  // Header text colour follows whichever section sits behind it (a thin band at the header's height).
-  const lightSections = [...document.querySelectorAll('.work, .skills')];
-  let toneIO;
-  function watchTone() {
-    if (toneIO) toneIO.disconnect();
-    toneIO = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { e.target._under = e.isIntersecting; });
-      nav.classList.toggle('on-light', lightSections.some((s) => s._under));
-    }, { rootMargin: `-40px 0px -${Math.max(0, innerHeight - 42)}px 0px` });
-    lightSections.forEach((s) => toneIO.observe(s));
-  }
-  watchTone();
-  addEventListener('resize', watchTone);
-
   const navLinks = [...nav.querySelectorAll('nav a')];
   const targets = { story: '#ch-1', work: '#work', engagement: '#engagement', skills: '#skills', contact: '#contact' };
   const spy = new IntersectionObserver((entries) => {
