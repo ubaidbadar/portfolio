@@ -1,0 +1,28 @@
+# Netlify configuration. The site is plain static files in public/; there is no build step.
+[build]
+  publish = "public"
+
+# These folders are kept in the repo for development but are not part of the site.
+[[redirects]]
+  from = "/audit/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/scripts/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Screenshots change rarely; let browsers keep them for a week.
+[[headers]]
+  for = "/assets/shots/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
