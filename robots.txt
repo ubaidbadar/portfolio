@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://u-portfolio.web.app/sitemap.xml

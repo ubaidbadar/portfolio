@@ -1,16 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="9 3 54 48" role="img" aria-label="Ubaid Badar">
-  <defs>
-    <linearGradient id="face" x1="12" y1="14" x2="54" y2="48" gradientUnits="userSpaceOnUse">
-      <stop class="a" offset="0" stop-color="#4a3aff"/>
-      <stop class="b" offset="1" stop-color="#b23cff"/>
-    </linearGradient>
-    <!-- U and B share one spine: a single continuous ligature -->
-    <path id="ub" d="M15 15v20a10 10 0 0 0 20 0V15v30M35 15h6.5a7.5 7.5 0 0 1 0 15H35h8.5a7.5 7.5 0 0 1 0 15H35"/>
-  </defs>
-  <g fill="none" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
-    <use class="e2" href="#ub" stroke="#c895f7" transform="translate(6 -6)"/>
-    <use class="e1" href="#ub" stroke="#8a7df5" transform="translate(3 -3)"/>
-    <use class="k" href="#ub" stroke="#f4f1ff" stroke-width="8.6"/>
-    <use href="#ub" stroke="url(#face)"/>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 64 58" aria-label="Ubaid Badar"><defs><linearGradient id="a" x1="12" y1="14" x2="54" y2="48" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4a3aff"/><stop offset="1" stop-color="#b23cff"/></linearGradient><filter id="c" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4.2"/></filter><path id="b" d="M15 15v20a10 10 0 0 0 20 0V15v30m0-30h6.5a7.5 7.5 0 0 1 0 15H35h8.5a7.5 7.5 0 0 1 0 15H35" fill="none" stroke="url(#a)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/></defs><use href="#b" filter="url(#c)" opacity=".34"/><use href="#b"/></svg>
