@@ -65,7 +65,7 @@
     H = stage.clientHeight;
     top = story.getBoundingClientRect().top + scrollY;
     wide = W >= 860;
-if (wide) {
+    if (wide) {
       fitScale = Math.min((W * 0.5) / 1000, (H * 0.8) / 720);
       return;
     }

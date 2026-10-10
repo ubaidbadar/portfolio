@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://u-portfolio.web.app/sitemap.xml
+Sitemap: https://ubaidbadar.pro/sitemap.xml

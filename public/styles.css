@@ -237,10 +237,10 @@ a { color: inherit; }
 .motion .hero.is-gone { visibility: hidden; }
 .motion .hero h1 span { will-change: transform; }
 .motion .rail {
-  display: flex; flex-direction: column; gap: .35rem;
+  display: flex; flex-direction: column; gap: .1rem;
   position: absolute; right: calc(var(--gutter) / 2.4); top: 50%; z-index: 4; transform: translateY(-50%);
 }
-.rail a { display: block; padding: .45rem; }
+.rail a { display: block; padding: .6rem; } /* 6px dot + padding = a 25px target */
 .rail a::before {
   content: ""; display: block; width: 6px; height: 6px; border-radius: 50%;
   background: currentColor; opacity: .3; transition: transform .3s, opacity .3s;
@@ -502,23 +502,29 @@ body::before {
 .group::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 .sec-head + .group { margin-top: 0; }
 
-/* Main projects: two large cards */
-.features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+/* Flagship case studies: one full-width card each. The pitch and the links sit on the left, the
+   case notes (role, product, engineering) on the right; below 860px the notes drop underneath. */
+.features { display: grid; gap: 1rem; }
 .feature {
-  position: relative; overflow: hidden; isolation: isolate; display: flex; flex-direction: column;
-  min-height: 27rem; padding: clamp(1.75rem, 3.5vw, 3rem);
+  position: relative; overflow: hidden; isolation: isolate;
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(1.75rem, 4vw, 4rem);
+  padding: clamp(1.75rem, 3.5vw, 3rem);
 }
+.feature-copy { container-type: inline-size; display: flex; flex-direction: column; }
 .feature::before { content: ""; position: absolute; inset: 0; z-index: -1; }
 .f-stock::before { background: radial-gradient(70% 80% at 100% 0%, rgba(61,139,255,.42), transparent 70%), radial-gradient(50% 60% at 0% 100%, rgba(74,58,255,.2), transparent 70%); }
 .f-predict::before { background: radial-gradient(70% 80% at 100% 0%, rgba(91,75,255,.55), transparent 70%), radial-gradient(50% 60% at 0% 100%, rgba(192,77,255,.2), transparent 70%); }
 .feature .proj-kind { width: auto; padding: 0; box-shadow: none; font-size: var(--label); letter-spacing: var(--track); line-height: 1.6; color: var(--accent-soft); }
-.feature h4 { margin: 1rem 0 1.25rem; font-size: clamp(2.2rem, 4.4vw, 4rem); line-height: 1; letter-spacing: -.04em; overflow-wrap: anywhere; }
-.feature blockquote {
-  width: fit-content; margin: 0 0 1.1rem; font-size: clamp(1.15rem, 1.8vw, 1.5rem); font-weight: 650; line-height: 1.25; letter-spacing: -.02em;
-  color: var(--cream); /* the gradient is kept for headlines and primary actions */
-}
-.feature .desc { max-width: 34rem; color: var(--dim); }
+/* Sized from the column it sits in, so a product name never has to break mid-word. */
+.feature h4 { margin: 1rem 0 1.25rem; font-size: clamp(1.5rem, 11cqi, 4rem); line-height: 1; letter-spacing: -.04em; overflow-wrap: break-word; }
+.feature .desc { max-width: 34rem; font-size: clamp(1.05rem, 1.4vw, 1.2rem); color: rgba(244,241,234,.86); }
 .feature .tags { margin-bottom: 2rem; }
+/* Case notes: a ruled list, label above each answer */
+.case { align-self: center; margin: 0; }
+.case div { padding: 1.1rem 0; border-top: 1px solid var(--line); }
+.case div:last-child { padding-bottom: 0; }
+.case dt { margin-bottom: .4rem; font: var(--micro) var(--mono); letter-spacing: var(--track); text-transform: uppercase; color: var(--accent-soft); }
+.case dd { max-width: 36rem; font-size: .98rem; color: var(--dim); }
 .feature .actions { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-top: auto; }
 /* Store links: platform mark plus the usual two-line label */
 .btn-store { display: inline-flex; align-items: center; gap: .65rem; padding: .72rem 1.25rem .72rem 1rem; text-align: left; }
@@ -602,14 +608,15 @@ body::before {
 .actions-center { margin-top: 1.5rem; text-align: center; }
 
 /* Skills */
-.skill-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.skill-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
 .skill-grid > div { padding: 1.75rem 1.75rem 1.4rem; }
 .skill-grid h3 { color: var(--accent-soft); margin-bottom: 1rem; }
-.skill-grid li { padding: .6rem 0; border-top: 1px solid var(--line); font-size: 1.08rem; }
+.skill-grid li { padding: .6rem 0; border-top: 1px solid var(--line); font-size: 1.02rem; }
 
 /* Contact */
 .contact { padding-bottom: clamp(2rem, 4vw, 3rem); }
-.contact h2 { margin: .9rem 0 2.5rem; font-size: clamp(2.8rem, 9vw, 8.5rem); line-height: .9; letter-spacing: -.05em; transform-origin: left; }
+.contact-lede { max-width: 38rem; margin-bottom: 2rem; font-size: clamp(1.05rem, 1.5vw, 1.25rem); color: var(--dim); }
+.contact h2 { margin: .9rem 0 1.75rem; font-size: clamp(2.8rem, 9vw, 8.5rem); line-height: .9; letter-spacing: -.05em; transform-origin: left; }
 .grad { display: block; width: fit-content; padding-bottom: .08em; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .mail {
   display: inline-flex; align-items: center; gap: .9rem; max-width: 100%;
@@ -636,8 +643,7 @@ body::before {
 .foot-bar a { text-decoration: none; }
 
 @media (max-width: 859px) {
-  .features { grid-template-columns: 1fr; }
-  .feature { min-height: 0; }
+  .feature { grid-template-columns: 1fr; }
   .platforms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .platforms a { padding: 1.25rem 1.1rem 1.3rem; }
   /* Skills: one card per row, its items in two columns, so the section is not a long ladder */
@@ -650,6 +656,9 @@ body::before {
   .examples { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .example, .example:nth-child(-n+2) { grid-column: auto; }
   .quotes { columns: 2; }
+}
+@media (min-width: 860px) and (max-width: 1099px) {
+  .skill-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 639px) {
   :root { --r-lg: 22px; }
@@ -688,7 +697,7 @@ body::before {
     .frame img {
       animation: img-drift linear both; animation-timeline: view(); animation-range: cover 0% cover 100%;
     }
-    .feature, .example, .sec-head, .stats, .skill-grid > div, .quote, .platforms li {
+    .feature, .example, .sec-head, .stats, .skill-grid > div, .quote, .platforms li, .contact-lede {
       animation: copy-in linear both; animation-timeline: view(); animation-range: entry 0% entry 70%;
     }
     /* Tall blocks finish after a fixed distance instead, so they are not half-faded for a full screen */

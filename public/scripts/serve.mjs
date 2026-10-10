@@ -16,6 +16,9 @@ const types = {
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.ico': 'image/x-icon',
+  '.pdf': 'application/pdf',
+  '.xml': 'application/xml',
+  '.txt': 'text/plain; charset=utf-8',
 };
 
 createServer(async (req, res) => {
