@@ -221,6 +221,12 @@
     .observe(document.querySelector('.nav-sentinel'));
 
   const navLinks = [...nav.querySelectorAll('nav a')];
+  // Small screens open the links as a popover menu: close it once a link is chosen, or when the
+  // window grows back to the desktop layout.
+  const menu = nav.querySelector('nav');
+  const closeMenu = () => { if (menu.hidePopover && menu.matches(':popover-open')) menu.hidePopover(); };
+  menu.addEventListener('click', (e) => { if (e.target.closest('a')) closeMenu(); });
+  matchMedia('(min-width: 860px)').addEventListener('change', closeMenu);
   const targets = { story: '#ch-1', work: '#work', engagement: '#engagement', reviews: '#reviews', skills: '#skills', contact: '#contact' };
   const spy = new IntersectionObserver((entries) => {
     entries.forEach((e) => {

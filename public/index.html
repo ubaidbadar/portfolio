@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ubaid Badar — Full-Stack SaaS &amp; AI Engineer | React, Next.js, Node.js</title>
-  <meta name="description" content="Ubaid Badar is a full-stack engineer and technical lead who builds SaaS products end to end: React and Next.js frontends, Node.js backends, React Native apps and AI integrations. Lead developer on StockAlgos and Predictr since 2019.">
+  <meta name="description" content="Ubaid Badar builds SaaS products end to end: React, Next.js, Node.js, React Native and AI integrations. Lead developer on StockAlgos and Predictr since 2019.">
   <meta name="theme-color" content="#06080f">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="author" content="Ubaid Badar">
@@ -131,7 +131,7 @@
         <path d="M15 15v20a10 10 0 0 0 20 0V15v30M35 15h6.5a7.5 7.5 0 0 1 0 15H35h8.5a7.5 7.5 0 0 1 0 15H35" stroke="url(#nav-face)"/>
       </svg>
     </a>
-    <nav aria-label="Primary">
+    <nav aria-label="Primary" id="site-menu" popover>
       <a href="#ch-1">Story</a>
       <a href="#work">Work</a>
       <a href="#engagement">Experience</a>
@@ -142,6 +142,9 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H10l-6 4z"/></svg>
       Let's talk
     </a>
+    <button class="nav-menu" type="button" popovertarget="site-menu" aria-label="Menu">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h14M5 15h14"/></svg>
+    </button>
   </header>
 
   <main id="top">
@@ -217,7 +220,7 @@
                     <span class="id-badge">Top Rated Plus</span>
                   </div>
                   <div class="id-stats">
-                    <p><b>750+</b><i>Orders</i></p>
+                    <p><b>720+</b><i>Orders</i></p>
                     <p><b>5.0</b><i>Rating</i></p>
                     <p><b>8+</b><i>Years</i></p>
                   </div>
@@ -247,7 +250,7 @@
         <div class="hero">
           <p class="eyebrow">Full-stack &amp; mobile engineer · Technical lead</p>
           <h1><span class="h1-a">Ubaid</span> <span class="h1-b">Badar</span></h1>
-          <p class="hero-lede">I build and scale SaaS products end to end: React and Next.js frontends, Node.js backends, mobile apps and AI integrations. Lead developer on four production platforms since 2019, with 750+ freelance orders delivered.</p>
+          <p class="hero-lede">I build and scale SaaS products end to end: React and Next.js frontends, Node.js backends, mobile apps and AI integrations. Lead developer on four production platforms since 2019, with 720+ Fiverr orders delivered.</p>
           <p class="hero-cta">
             <a class="btn" href="#contact">Start a project</a>
             <a class="btn btn-ghost" href="#work">See the work</a>
@@ -255,7 +258,7 @@
         </div>
 
         <!-- Decorative repeat of facts stated in chapter 01 and the experience section. -->
-        <div class="ticker" aria-hidden="true"><ul><li>750+ orders delivered</li><li>5.0 average rating</li><li>Top Rated Plus on Upwork</li><li>Level 2 Seller on Fiverr</li><li>4 production platforms since 2019</li><li>USA · Canada · Europe · Asia</li></ul></div>
+        <div class="ticker" aria-hidden="true"><ul><li>720+ Fiverr orders delivered</li><li>5.0 average rating</li><li>Top Rated Plus on Upwork</li><li>Level 2 Seller on Fiverr</li><li>4 production platforms since 2019</li><li>USA · Canada · Europe · Asia</li></ul></div>
 
         <ol class="rail" aria-label="Story chapters">
           <li><a href="#ch-1" aria-label="Chapter 1: Identity"></a></li>
@@ -273,10 +276,10 @@
           <div class="step-in">
             <p class="num">01 — Identity</p>
             <h2>One engineer, the whole stack.</h2>
-            <p>Senior freelance developer since 2018. Top Rated Plus on Upwork and a Level 2 Seller on Fiverr, with a 5.0-star average across 700+ combined reviews.</p>
+            <p>Senior freelance developer since 2018. Top Rated Plus on Upwork and a Level 2 Seller on Fiverr, with a 5.0-star average across 600+ Fiverr reviews.</p>
             <ul class="facts">
               <li><b>8+</b> years</li>
-              <li><b>750+</b> orders</li>
+              <li><b>720+</b> orders</li>
               <li><b>5.0</b> rating</li>
             </ul>
           </div>
@@ -346,9 +349,10 @@
           <dl class="case">
             <div><dt>My role</dt><dd>Lead full-stack developer since 2019, working directly with the founder from architecture through deployment.</dd></div>
             <div><dt>The product</dt><dd>A suite of research tools on live market data, including hedge-fund, Congress and insider trading trackers, an options screener and sentiment analysis, sold as per-tool subscriptions with a free trial.</dd></div>
-            <div><dt>AI</dt><dd>StockGPT, an in-product assistant that answers questions about the data on screen.</dd></div>
+            <div><dt>AI</dt><dd>StockGPT is built into every tool: it reads the data on screen and lets users switch between AI models. Founder Agent chains no-code AI research pipelines across the live data sources.</dd></div>
+            <div><dt>In production</dt><dd>Live since 2019. The platform lists 10+ research tools, 11 live data sources and a monthly cash-prize competition.</dd></div>
           </dl>
-          <!-- TODO(confirm with Ubaid): add one verified outcome as a fourth row, and a real product screenshot beside it (active subscribers, tools shipped, uptime, load-time gain). None is published because none could be verified. -->
+          <!-- "In production" figures come from the public product site and store listings (checked 2026-10-10). TODO(Ubaid): add private metrics you can vouch for (users, subscribers, revenue, performance gains) and a real product screenshot. -->
         </article>
         <article class="feature f-predict">
           <div class="feature-copy">
@@ -370,10 +374,12 @@
           </div>
           <dl class="case">
             <div><dt>My role</dt><dd>Lead developer on the web app and the iOS and Android apps, as part of the same long-term engagement as StockAlgos.</dd></div>
-            <div><dt>The product</dt><dd>Users make calls on real stocks, climb a public leaderboard and compete in recurring cash-prize competitions.</dd></div>
-            <div><dt>Engineering</dt><dd>React and Tailwind CSS client with real-time updates over WebSockets and Google sign-in, on a Node.js and MongoDB backend.</dd></div>
+            <div><dt>The product</dt><dd>Users make daily calls on real stocks, get scored on accuracy and climb a public leaderboard. The top three share $1,000 in cash each month, and accurate predictors can build a following and monetize their posts.</dd></div>
+            <div><dt>Engineering</dt><dd>React and Tailwind CSS client with real-time updates over WebSockets and Google sign-in, on a Node.js and MongoDB backend, plus in-app purchases on mobile.</dd></div>
+            <div><dt>AI</dt><dd>AI stock summaries that draw on the StockAlgos data feeds, and in-app AI chat alongside each prediction.</dd></div>
+            <div><dt>In production</dt><dd>Live on the web, the App Store and Google Play, with 1,000+ Android installs and new releases shipping most weeks.</dd></div>
           </dl>
-          <!-- TODO(confirm with Ubaid): add one verified outcome as a fourth row, and a real product screenshot beside it (registered users, app installs, predictions made). None is published because none could be verified. -->
+          <!-- "In production" figures come from the public product site and store listings (checked 2026-10-10). TODO(Ubaid): add private metrics you can vouch for (users, subscribers, revenue, performance gains) and a real product screenshot. -->
         </article>
       </div>
 
@@ -481,9 +487,9 @@
         <p class="sec-lede">Unedited reviews from buyers on my Fiverr profile.</p>
       </header>
       <dl class="stats">
-        <div><dt>Freelance orders completed</dt><dd data-count="750" data-suffix="+">750+</dd></div>
+        <div><dt>Fiverr orders completed</dt><dd data-count="720" data-suffix="+">720+</dd></div>
         <div><dt>Average star rating</dt><dd data-count="5" data-decimals="1">5.0</dd></div>
-        <div><dt>Combined reviews</dt><dd data-count="700" data-suffix="+">700+</dd></div>
+        <div><dt>Fiverr reviews</dt><dd data-count="600" data-suffix="+">600+</dd></div>
       </dl>
       <p class="fine">Top Rated Plus on <a href="https://www.upwork.com/freelancers/~019cc877390ea625e9" target="_blank" rel="noopener">Upwork</a> · Level 2 Seller on <a href="https://www.fiverr.com/ubaidbadar333" target="_blank" rel="noopener">Fiverr</a> · Clients in the USA, Canada, Europe and Asia</p>
         <figure class="quote quote-lead">
