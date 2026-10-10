@@ -80,63 +80,77 @@ a { color: inherit; }
 .btn-ghost:hover { background: rgba(255,255,255,.1); filter: none; }
 
 /* ---------- Nav ---------- */
-/* Transparent over the hero; condenses into a floating glass pill once you scroll. */
+/* Three separate pieces on one line, all the same height: the mark on the left, the section links in
+   a frosted pill in the centre, and one solid action on the right. Over the hero they sit directly
+   on the page. The gaps between the pieces let clicks through. */
 .nav {
+  --h: 2.75rem;
+  /* One frosted surface for the mark and the links, the same at the top of the page and after
+     scrolling. Over the dark page it is a faint lift; the backdrop is also dimmed, which changes
+     nothing on dark but keeps the links readable when a light screenshot passes underneath. */
+  --frost: rgba(255,255,255,.08);
+  --frost-filter: blur(1.25rem) brightness(.4) saturate(1.4);
   position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 1.1rem var(--gutter); color: #fff; border-radius: var(--r-pill);
-  transition: top .5s var(--ease), left .5s var(--ease), right .5s var(--ease),
-    padding .5s var(--ease), background .4s, box-shadow .4s, color .4s;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .5rem;
+  padding: 1.1rem var(--gutter); color: #fff; pointer-events: none;
+  transition: padding .5s var(--ease);
 }
-.nav.is-stuck {
-  top: .75rem; left: max(.75rem, calc(50% - 27rem)); right: max(.75rem, calc(50% - 27rem));
-  padding: .45rem .67rem 0.45rem 0.5rem;
-  /* Dark glass: whatever scrolls underneath (a white screenshot included) is dimmed and blurred
-     enough that the links keep their contrast. */
-  background: rgba(10,11,22,.8); -webkit-backdrop-filter: blur(1.25rem) saturate(1.5); backdrop-filter: blur(1.25rem) saturate(1.5);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.14), 0 14px 40px rgba(0,0,0,.35);
-}
-/* Page progress: a ring that fills around the UB mark as you scroll. */
+.nav > * { pointer-events: auto; }
+.nav.is-stuck { padding-block: .75rem; }
+
+/* Mark, with a page-progress ring that fills around it as you scroll. */
 @property --p { syntax: "<number>"; inherits: false; initial-value: 0; }
 @keyframes ring { to { --p: 100; } }
-.nav.is-stuck .nav-mark {
-  position: relative; display: grid; place-items: center; width: 2.75rem; height: 2.75rem;
+.nav-mark {
+  position: relative; justify-self: start; display: grid; place-items: center; width: var(--h); height: var(--h); border-radius: 50%;
+  transition: transform .35s var(--ease), background-color .4s;
 }
+.nav-mark:hover { transform: rotate(-8deg) scale(1.12); }
+/* A wide, faint glow in the logo's own violet. It is ambient light, kept weak enough that the letter
+   edges stay crisp; at the small in-ring size it is dropped, where any blur costs legibility. */
+.nav-mark svg {
+  display: block; width: 2.5rem; height: auto; overflow: visible; fill: none; stroke-width: 6.5; stroke-linecap: round; stroke-linejoin: round;
+  filter: drop-shadow(0 0 .75rem rgba(150,80,255,.38)); transition: width .5s var(--ease), filter .4s;
+}
+.nav.is-stuck .nav-mark { background: var(--frost); -webkit-backdrop-filter: var(--frost-filter); backdrop-filter: var(--frost-filter); }
+.nav.is-stuck .nav-mark svg { width: 1.45rem; filter: none; } /* sits inside the progress ring */
 .nav.is-stuck .nav-mark::before {
   content: ""; position: absolute; inset: 0; border-radius: 50%;
   /* The filled arc runs violet -> magenta -> violet, so its two ends are the same colour and it closes
-     without a seam when the page reaches the bottom. Only the faint track adapts to the surface. */
-  background: conic-gradient(#8a7bff, var(--pink) calc(var(--p) * .5%), #8a7bff calc(var(--p) * 1%), var(--ring-track, rgba(255,255,255,.28)) 0);
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3.5px));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3.5px));
+     without a seam when the page reaches the bottom. */
+  background: conic-gradient(#8a7bff, var(--pink) calc(var(--p) * .5%), #8a7bff calc(var(--p) * 1%), rgba(255,255,255,.22) 0);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
 }
 @supports (animation-timeline: scroll()) {
   .nav.is-stuck .nav-mark::before { animation: ring linear both; animation-timeline: scroll(root); }
 }
-.nav-mark {
-  transition: transform .35s var(--ease), color .3s;
+
+/* Section links */
+.nav nav {
+  display: flex; align-items: center; height: var(--h); padding: 0 .3rem; border-radius: var(--r-pill);
+  /* No outline: the pill is a faint frosted fill with a soft two-layer drop shadow. */
+  background: var(--frost); -webkit-backdrop-filter: var(--frost-filter); backdrop-filter: var(--frost-filter);
+  box-shadow: 0 1px 3px 0 #00060c33, 0 1px 2px -1px #00060c33;
 }
-.nav-mark:hover { transform: rotate(-8deg) scale(1.15); }
-/* A wide, faint glow in the logo's own violet. It is ambient light, kept weak enough that the letter
-   edges stay crisp; at the small in-ring size it is dropped, where any blur costs legibility. */
-.nav-mark svg { overflow: visible; filter: drop-shadow(0 0 .75rem rgba(150,80,255,.38)); transition: width .5s var(--ease), filter .4s; }
-.nav.is-stuck .nav-mark svg { filter: none; }
-.nav-mark svg { display: block; width: 2.5rem; height: auto; fill: none; stroke-width: 6.5; stroke-linecap: round; stroke-linejoin: round; transition: width .5s var(--ease); }
-.nav.is-stuck .nav-mark svg { width: 1.45rem; } /* sits inside the progress ring */
-.nav nav { display: flex; align-items: center; gap: .15rem; }
 .nav nav a {
-  position: relative; padding: .5rem .9rem; border-radius: var(--r-pill); font-size: .88rem; text-decoration: none;
-  color: rgba(255,255,255,.78); transition: color .25s, background .25s, transform .25s;
+  display: inline-flex; align-items: center; height: calc(var(--h) - .6rem); padding: 0 1.05rem; border-radius: var(--r-pill);
+  font-size: .9rem; text-decoration: none; white-space: nowrap;
+  color: rgba(255,255,255,.72); transition: color .25s, background-color .25s;
 }
-.nav nav a:not(.nav-cta)::after { /* dot that grows in on hover / marks the current section */
-  content: ""; position: absolute; left: 50%; bottom: .12rem; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%;
-  background: var(--accent-soft); transform: scale(0); transition: transform .3s var(--ease);
+.nav nav a:hover { color: #fff; background: rgba(255,255,255,.07); }
+/* The section in view is a filled segment inside the pill */
+.nav nav a[aria-current] { color: #fff; background: rgba(255,255,255,.16); }
+
+/* The one action: solid, so it is the brightest thing in the header */
+.nav-cta {
+  justify-self: end; display: inline-flex; align-items: center; gap: .5rem; height: var(--h); padding: 0 1.2rem 0 1rem; border-radius: var(--r-pill);
+  background: var(--cream); color: var(--ink); font-size: .95rem; font-weight: 650; letter-spacing: -.01em; text-decoration: none; white-space: nowrap;
+  transition: transform .25s var(--ease), box-shadow .25s, background-color .25s;
 }
-.nav nav a:hover { color: #fff; background: rgba(255,255,255,.12); }
-.nav nav a:hover::after, .nav nav a[aria-current]::after { transform: scale(1); }
-.nav nav a[aria-current] { color: #fff; }
-.nav nav .nav-cta { margin-left: .5rem; background: var(--grad); color: #fff; font-weight: 600; }
-.nav nav .nav-cta:hover { background: var(--grad); filter: brightness(1.12); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(140,70,255,.5); }
+.nav-cta svg { width: 1.05rem; height: 1.05rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+.nav-cta:hover { transform: translateY(-1px); background: #fff; box-shadow: 0 10px 30px rgba(140,70,255,.5); }
+.nav-cta:active { transform: scale(.97); transition-duration: .08s; }
 .nav-sentinel { position: absolute; top: 0; left: 0; width: 1px; height: 45vh; pointer-events: none; }
 
 /* ---------- Story: static baseline (no JS / reduced motion) ---------- */
@@ -413,8 +427,15 @@ a { color: inherit; }
   .motion .step p { font-size: .98rem; }
   .motion .rail { right: .1rem; top: 30%; }
   .nav nav a:nth-child(3), .nav nav a:nth-child(4), .nav nav a:nth-child(5) { display: none; }
+  .nav { grid-template-columns: auto 1fr auto; } /* the side pieces differ in width here, so the links centre in what is left */
+  .nav nav { justify-self: center; }
   .facts { gap: 1.4rem; margin-top: 1.1rem; }
   .facts b { font-size: 1.7rem; }
+}
+@media (max-width: 419px) {
+  .nav-cta { padding-inline: 1rem; }
+  .nav-cta svg { display: none; }
+  .nav nav a { padding-inline: .8rem; }
 }
 /* Short phones: tighten the copy so the pinned visual keeps its own space. */
 @media (max-width: 859px) and (max-height: 720px) {
