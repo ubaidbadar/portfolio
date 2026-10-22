@@ -11,6 +11,13 @@
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const lerp = (a, b, u) => a + (b - a) * u;
   const ease = (u) => u * u * (3 - 2 * u);
+  // Fully transparent layers are also hidden, so the browser skips painting and compositing them.
+  // Most of the scene is invisible at any moment (one face per slab, one backdrop), and its large
+  // glows and blurs are what make scrolling expensive.
+  const fade = (node, v) => {
+    node.style.opacity = v;
+    node.style.visibility = v > 0 ? '' : 'hidden';
+  };
 
   /* ---------- Storyboard ----------
      One pose per stage (0 hero, 1 identity, 2 architecture, 3 build, 4 connect, 5 evidence).
@@ -97,7 +104,7 @@
     const sc = lerp(!wide && i === 0 ? heroScale : A.sc, B.sc, u) * fitScale;
     el.fit.style.transform = `translate3d(${lerp(ax, bx, u)}px,${lerp(ay, by, u)}px,0) scale(${sc})`;
     el.tilt.style.transform = `rotateY(${ptr.x * 7}deg) rotateX(${lerp(A.rx, B.rx, u) - ptr.y * 5}deg) rotateZ(${lerp(A.rz, B.rz, u)}deg)`;
-    el.floor.style.opacity = lerp(A.floor || 0, B.floor || 0, u);
+    fade(el.floor, lerp(A.floor || 0, B.floor || 0, u));
     el.floor.style.transform = `translateZ(-170px) scale(${1 + t * 0.25})`;
 
     el.slabs.forEach((slab, k) => {
@@ -105,16 +112,16 @@
       slab.style.transform = `translate3d(${lerp(a[0], b[0], u)}px,${lerp(a[1], b[1], u)}px,${lerp(a[2], b[2], u)}px) scale(${lerp(a[3], b[3], u)})`;
       // Outgoing face clears before the incoming one appears, so labels never overlap.
       el.faces[k].forEach((f, n) => {
-        f.style.opacity = A.face[n] === B.face[n] ? A.face[n] : A.face[n] ? 1 - clamp(u * 2) : clamp(u * 2 - 1);
+        fade(f, A.face[n] === B.face[n] ? A.face[n] : A.face[n] ? 1 - clamp(u * 2) : clamp(u * 2 - 1));
       });
     });
-    el.bgs.forEach((bg, n) => { bg.style.opacity = lerp(A.bg[n], B.bg[n], u); });
+    el.bgs.forEach((bg, n) => fade(bg, lerp(A.bg[n], B.bg[n], u)));
 
     const link = lerp(A.link, B.link, u);
-    el.links.style.opacity = link;
-    el.hub.style.opacity = link;
+    fade(el.links, link);
+    fade(el.hub, link);
     el.hub.style.transform = `translateZ(20px) scale(${0.4 + 0.6 * link})`;
-    el.chips.forEach((c) => { c.style.opacity = clamp(link * 2 - 1); });
+    el.chips.forEach((c) => fade(c, clamp(link * 2 - 1)));
     if (link > 0) {
       el.linkPaths.forEach((p) => { p.style.strokeDashoffset = 1 - link; });
       el.flowPaths.forEach((p) => { p.style.strokeDashoffset = -t * 1.6; p.style.opacity = clamp(link * 2 - 1); });
@@ -127,13 +134,13 @@
     el.h1a.style.transform = `translate3d(${-h * 22}%,${-h * 60}%,0) scale(${1 + h * 0.35})`;
     el.h1b.style.transform = `translate3d(${h * 30}%,${-h * 20}%,0) scale(${1 + h * 0.35})`;
     el.lede.forEach((n) => { n.style.transform = `translate3d(0,${h * 60}px,0)`; });
-    el.ticker.style.opacity = 1 - h;
+    fade(el.ticker, 1 - h);
     // The orbiting stack labels get pulled into the monolith as the story starts.
     const pull = ease(clamp(t / 0.8));
     el.orbs.forEach((o) => {
       const k = 1 - pull;
       o.style.transform = `translate3d(${o.dataset.x * k + ptr.x * 14}px,${o.dataset.y * k + ptr.y * 14}px,0) scale(${0.3 + 0.7 * k})`;
-      o.style.opacity = clamp(k * 1.6);
+      fade(o, clamp(k * 1.6));
     });
 
     el.steps.forEach((s, k) => {
