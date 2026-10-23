@@ -164,8 +164,13 @@ a { color: inherit; }
 }
 .stage { position: relative; min-height: 100svh; overflow: hidden; display: flex; }
 .bgs, .bg { position: absolute; inset: 0; }
-.bgs { -webkit-mask-image: linear-gradient(#000 calc(100% - var(--fade)), transparent); mask-image: linear-gradient(#000 calc(100% - var(--fade)), transparent); }
-.bg { opacity: 0; }
+/* The fade-out mask sits on each backdrop rather than on .bgs: a mask on the parent of layers that
+   are cross-faded would force an extra full-screen offscreen pass on every frame. */
+.bg { opacity: 0; -webkit-mask-image: linear-gradient(#000 calc(100% - var(--fade)), transparent); mask-image: linear-gradient(#000 calc(100% - var(--fade)), transparent); }
+/* main.js cross-fades the backdrops on every scroll frame. Each one gets its own compositor layer so
+   the fade is a cheap GPU blend; without this the full-screen gradients and the fade-out mask are
+   repainted on every frame, which was the single biggest cost of scrolling the story. */
+.motion .bg { will-change: opacity; }
 /* Story backdrops use the same recipe as the rest of the site: colour glows on the near-black canvas.
    Each chapter keeps its own tint, so the backdrop still shifts as the story moves on. */
 .bg-a {
